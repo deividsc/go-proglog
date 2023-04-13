@@ -1,10 +1,8 @@
 package log
 
 import (
-	"fmt"
 	api "github.com/deividsc/go-proglog/api/v1"
 	"io"
-	"io/ioutil"
 	"os"
 	"path"
 	"sort"
@@ -36,7 +34,7 @@ func NewLog(dir string, c Config) (*Log, error) {
 }
 
 func (l *Log) setup() error {
-	files, err := ioutil.ReadDir(l.Dir)
+	files, err := os.ReadDir(l.Dir)
 	if err != nil {
 		return err
 	}
@@ -93,7 +91,7 @@ func (l *Log) Read(off uint64) (*api.Record, error) {
 		}
 	}
 	if s == nil || s.nextOffset <= off {
-		return nil, fmt.Errorf("offset out of range: %d", off)
+		return nil, api.ErrOffsetOutOfRange{Offset: off}
 	}
 	return s.Read(off)
 }
