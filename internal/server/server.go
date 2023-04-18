@@ -1,10 +1,11 @@
 package server
 
 import (
+	"context"
+
 	api "github.com/deividsc/go-proglog/api/v1"
 	"google.golang.org/grpc"
 )
-import "context"
 
 type Config struct {
 	CommitLog CommitLog
@@ -17,8 +18,11 @@ type grpcServer struct {
 	*Config
 }
 
-func NewGRPCServer(config *Config) (*grpc.Server, error) {
-	gsrv := grpc.NewServer()
+func NewGRPCServer(config *Config, opts ...grpc.ServerOption) (
+	*grpc.Server,
+	error,
+) {
+	gsrv := grpc.NewServer(opts...)
 	srv, err := newgrpcServer(config)
 	if err != nil {
 		return nil, err
